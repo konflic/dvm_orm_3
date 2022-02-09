@@ -1,4 +1,13 @@
+import sys
 import random
+
+from datacenter.models import Schoolkid
+from datacenter.models import Mark
+from datacenter.models import Lesson
+from datacenter.models import Subject
+from datacenter.models import Commendation
+from datacenter.models import Chastisement
+from django.db.models import ObjectDoesNotExist
 
 
 def get_schoolkid(name):
@@ -7,7 +16,13 @@ def get_schoolkid(name):
     :param name: Строка с именем ученика, пример "Василий Пупкин"
     :return: Schoolkid
     """
-    return Schoolkid.objects.get(full_name__contains=name)
+    from django.core.exceptions import DoesNotExist
+
+    try:
+        return Schoolkid.objects.get(full_name__contains=name)
+    except DoesNotExist:
+        print(f"Ученик с именем {name} не найден в журнале.")
+        sys.exit(1)
 
 
 def fix_marks(name):
@@ -57,15 +72,23 @@ def create_commendation(name, subject_title):
         ]
     )
 
-    subject = Subject.objects.filter(
-        title=subject_title, year_of_study=schoolkid.year_of_study
-    )[0]
+    try:
+        subject = Subject.objects.filter(
+            title=subject_title, year_of_study=schoolkid.year_of_study
+        )[0]
+    except IndexError:
+        print(f"Не найден предмет {subject_title}")
+        sys.exit(0)
 
-    lesson = Lesson.objects.filter(
-        group_letter=child.group_letter,
-        year_of_study=child.year_of_study,
-        subject=subject,
-    ).order_by("-date")[0]
+    try:
+        lesson = Lesson.objects.filter(
+            group_letter=child.group_letter,
+            year_of_study=child.year_of_study,
+            subject=subject,
+        ).order_by("-date")[0]
+    except IndexError:
+        print(f"Не найдено уроков по предмету {subject_title} у ученика {name}")
+        sys.exit(0)
 
     Commendation.objects.create(
         text=commendation_text,
