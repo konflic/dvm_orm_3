@@ -44,18 +44,27 @@ def create_commendation(name, subject_title):
     """
     schoolkid = get_schoolkid(name)
 
-    commendation_text = random.choice([
-        "Молодец!", "Отлично!", "Хорошо!",
-        "Ты меня приятно удивил!", "Великолепно!",
-        "Прекрасно!", "Талантливо!", "Потрясающе!"
-    ])
+    commendation_text = random.choice(
+        [
+            "Молодец!",
+            "Отлично!",
+            "Хорошо!",
+            "Ты меня приятно удивил!",
+            "Великолепно!",
+            "Прекрасно!",
+            "Талантливо!",
+            "Потрясающе!",
+        ]
+    )
 
-    subject = Subject.objects.filter(title=subject_title, year_of_study=schoolkid.year_of_study)[0]
+    subject = Subject.objects.filter(
+        title=subject_title, year_of_study=schoolkid.year_of_study
+    )[0]
 
     lesson = Lesson.objects.filter(
         group_letter=child.group_letter,
         year_of_study=child.year_of_study,
-        subject=subject
+        subject=subject,
     ).order_by("-date")[0]
 
     Commendation.objects.create(
@@ -63,5 +72,5 @@ def create_commendation(name, subject_title):
         created=lesson.date,
         schoolkid=child,
         subject=lesson.subject,
-        teacher=lesson.teacher
+        teacher=lesson.teacher,
     )
