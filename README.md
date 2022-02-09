@@ -8,4 +8,24 @@
 
 ### Использование
 
-Чтобы запустить скрипт можно его целиком “копипастнуть” в shell, а можно положить файл с кодом рядом с manage.py и подключить через import. Второй путь удобнее и надёжнее.
+Для использования скриптов нужно запустить [интерактивную консоль](https://www.csestack.org/open-python-shell-django/) командой:
+
+```
+python manage.py shell
+```
+
+Чтобы использовать функции взлома нужно положить файл ```scripts.py``` рядом с manage.py и подключить через import.
+
+Пример использования скрипта в интерактивной консоли:
+
+```
+(venv) ~ python manage.py shell
+Python 3.8.10 (default, Nov 26 2021, 20:14:08) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from scripts import *
+>>> create_commendation("Фролов Иван", "География")
+>>> fix_marks("Фролов Иван")
+>>> remove_chastisements("Фролов Иван")
+```
