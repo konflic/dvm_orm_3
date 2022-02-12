@@ -22,7 +22,7 @@ def get_schoolkid(name):
         print(f"Не найдено учеников по запросу '{name}'.")
     except Model.MultipleObjectsReturned:
         print(f"Найдено несколько учеников по запросу '{name}'.")
-    sys.exit(1)
+    return None
 
 
 def fix_marks(name):
@@ -32,6 +32,10 @@ def fix_marks(name):
     :return: None
     """
     schoolkid = get_schoolkid(name)
+
+    if schoolkid is None:
+        sys.exit(0)
+
     bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__in=[2, 3])
 
     for mark in bad_marks:
@@ -47,6 +51,9 @@ def remove_chastisements(name):
     """
     schoolkid = get_schoolkid(name)
 
+    if schoolkid is None:
+        sys.exit(0)
+
     Chastisement.objects.filter(schoolkid=schoolkid).delete()
 
 
@@ -59,6 +66,9 @@ def create_commendation(name, subject_title):
     """
 
     schoolkid = get_schoolkid(name)
+
+    if schoolkid is None:
+        sys.exit(0)
 
     commendation_text = random.choice(
         [
