@@ -25,14 +25,12 @@ def get_schoolkid(name):
     return None
 
 
-def fix_marks(name):
+def fix_marks(schoolkid):
     """Исправление плохих оценок ученику с именем name.
 
     :param name: Строка с именем ученика, пример "Василий Пупкин"
     :return: None
     """
-    schoolkid = get_schoolkid(name)
-
     if schoolkid is None:
         sys.exit(0)
 
@@ -43,30 +41,25 @@ def fix_marks(name):
         mark.save()
 
 
-def remove_chastisements(name):
+def remove_chastisements(schoolkid):
     """Удалить замечания ученику с именем name.
 
     :param name: Строка с именем ученика, пример "Василий Пупкин"
     :return: None
     """
-    schoolkid = get_schoolkid(name)
-
     if schoolkid is None:
         sys.exit(0)
 
     Chastisement.objects.filter(schoolkid=schoolkid).delete()
 
 
-def create_commendation(name, subject_title):
+def create_commendation(schoolkid, subject_title):
     """Функция для добавления похвалы.
 
     :param name: Строка с именем ученика, пример "Василий Пупкин"
     :param subject_title: Предмет по которому нужно добавить похвалу
     :return: None
     """
-
-    schoolkid = get_schoolkid(name)
-
     if schoolkid is None:
         sys.exit(0)
 

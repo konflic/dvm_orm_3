@@ -25,7 +25,8 @@ Python 3.8.10 (default, Nov 26 2021, 20:14:08)
 Type "help", "copyright", "credits" or "license" for more information.
 (InteractiveConsole)
 >>> from scripts import *
->>> create_commendation("Фролов Иван", "География")
->>> fix_marks("Фролов Иван")
->>> remove_chastisements("Фролов Иван")
+>>> schoolkid = get_schoolkid("Фролов Иван")
+>>> create_commendation(schoolkid, "География")
+>>> fix_marks(schoolkid)
+>>> remove_chastisements(schoolkid)
 ```
