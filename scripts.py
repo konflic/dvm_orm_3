@@ -7,7 +7,7 @@ from datacenter.models import Lesson
 from datacenter.models import Subject
 from datacenter.models import Commendation
 from datacenter.models import Chastisement
-from django.db.models import ObjectDoesNotExist
+from django.db.models import Model
 
 
 def get_schoolkid(name):
@@ -16,13 +16,13 @@ def get_schoolkid(name):
     :param name: Строка с именем ученика, пример "Василий Пупкин"
     :return: Schoolkid
     """
-    from django.core.exceptions import DoesNotExist
-
     try:
         return Schoolkid.objects.get(full_name__contains=name)
-    except DoesNotExist:
-        print(f"Ученик с именем {name} не найден в журнале.")
-        sys.exit(1)
+    except Model.DoesNotExist:
+        print(f"Не найдено учеников по запросу '{name}'.")
+    except Model.MultipleObjectsReturned:
+        print(f"Найдено несколько учеников по запросу '{name}'.")
+    sys.exit(1)
 
 
 def fix_marks(name):
@@ -57,6 +57,7 @@ def create_commendation(name, subject_title):
     :param subject_title: Предмет по которому нужно добавить похвалу
     :return: None
     """
+
     schoolkid = get_schoolkid(name)
 
     commendation_text = random.choice(
@@ -72,28 +73,21 @@ def create_commendation(name, subject_title):
         ]
     )
 
-    try:
-        subject = Subject.objects.filter(
-            title=subject_title, year_of_study=schoolkid.year_of_study
-        )[0]
-    except IndexError:
-        print(f"Не найден предмет {subject_title}")
-        sys.exit(0)
 
-    try:
-        lesson = Lesson.objects.filter(
-            group_letter=child.group_letter,
-            year_of_study=child.year_of_study,
-            subject=subject,
-        ).order_by("-date")[0]
-    except IndexError:
-        print(f"Не найдено уроков по предмету {subject_title} у ученика {name}")
-        sys.exit(0)
+    subject = Subject.objects.filter(
+        title=subject_title, year_of_study=schoolkid.year_of_study
+    ).first()
+
+    lesson = Lesson.objects.filter(
+        group_letter=schoolkid.group_letter,
+        year_of_study=schoolkid.year_of_study,
+        subject=subject,
+    ).order_by("-date").first()
 
     Commendation.objects.create(
         text=commendation_text,
         created=lesson.date,
-        schoolkid=child,
+        schoolkid=schoolkid,
         subject=lesson.subject,
         teacher=lesson.teacher,
     )
