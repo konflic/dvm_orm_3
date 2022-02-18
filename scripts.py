@@ -75,16 +75,23 @@ def create_commendation(schoolkid, subject_title):
         ]
     )
 
-
     subject = Subject.objects.filter(
         title=subject_title, year_of_study=schoolkid.year_of_study
     ).first()
+
+    if subject is None:
+        print(f"Не получилось добавить похвалу, не найдены дынные для предмета {subject_title}")
+        return None
 
     lesson = Lesson.objects.filter(
         group_letter=schoolkid.group_letter,
         year_of_study=schoolkid.year_of_study,
         subject=subject,
     ).order_by("-date").first()
+
+    if lesson is None:
+        print(f"Не получилось добавить похвалу, не найдены дынные для урока у предмета {subject}")
+        return None
 
     Commendation.objects.create(
         text=commendation_text,
@@ -93,3 +100,5 @@ def create_commendation(schoolkid, subject_title):
         subject=lesson.subject,
         teacher=lesson.teacher,
     )
+
+    print(f"Похвала для ученика успешно добавлена")
