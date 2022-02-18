@@ -22,7 +22,6 @@ def get_schoolkid(name):
         print(f"Не найдено учеников по запросу '{name}'.")
     except Model.MultipleObjectsReturned:
         print(f"Найдено несколько учеников по запросу '{name}'.")
-    return None
 
 
 def fix_marks(schoolkid):
